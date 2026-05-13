@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="page-header">
+    <h1>История операций</h1>
+    <p>Все ваши транзакции</p>
+</div>
+
+<div class="card">
+    {% if transactions %}
+    <div class="tx-list">
+        {% for tx in transactions %}
+        {% if tx.description and tx.description.startswith('Оплата') %}
+            {% set icon = '💳' %}
+            {% set icon_class = 'pay' %}
+        {% elif tx.sender_id == current_user.id and tx.receiver_id != current_user.id %}
+            {% set icon = '↗️' %}
+            {% set icon_class = 'out' %}
+        {% else %}
+            {% set icon = '↙️' %}
+            {% set icon_class = 'in' %}
+        {% endif %}
+
+        <div class="tx-item">
+            <div class="tx-left">
+                <div class="tx-icon {{ icon_class }}">{{ icon }}</div>
+                <div>
+                    <div class="tx-desc">{{ tx.description or 'Перевод' }}</div>
+                    <div class="tx-date">{{ tx.timestamp.strftime('%d.%m.%Y, %H:%M') }}</div>
+                </div>
+            </div>
+            <div class="tx-amount {% if tx.receiver_id == current_user.id and tx.sender_id != current_user.id %}income{% else %}expense{% endif %}">
+                {% if tx.receiver_id == current_user.id and tx.sender_id != current_user.id %}
+                    +₽{{ "%.2f"|format(tx.amount) }}
+                {% else %}
+                    −₽{{ "%.2f"|format(tx.amount) }}
+                {% endif %}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="empty-state">
+        <div class="empty-state-icon">📋</div>
+        <p>Операций пока нет</p>
+    </div>
+    {% endif %}
+</div>
+
+{% endblock %}

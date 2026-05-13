@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="auth-page">
+    <div class="auth-logo">
+        <div class="logo-icon">E</div>
+        <h2>Вход в EduBank</h2>
+        <p>Введите данные для входа</p>
+    </div>
+    <div class="card">
+        <form method="POST" novalidate>
+            {{ form.hidden_tag() }}
+
+            <div class="form-group">
+                <label class="form-label">Email</label>
+                {{ form.email(class='form-input', placeholder='example@email.com', autocomplete='email') }}
+                {% for error in form.email.errors %}
+                    <div class="field-error">⚠ {{ error }}</div>
+                {% endfor %}
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Пароль</label>
+                {{ form.password(class='form-input', placeholder='Ваш пароль', autocomplete='current-password') }}
+                {% for error in form.password.errors %}
+                    <div class="field-error">⚠ {{ error }}</div>
+                {% endfor %}
+            </div>
+
+            <div style="margin-top:8px;">
+                {{ form.submit(class='btn btn-primary btn-full') }}
+            </div>
+        </form>
+    </div>
+    <div class="auth-footer">
+        Нет аккаунта? <a href="/register">Зарегистрируйтесь</a>
+    </div>
+</div>
+{% endblock %}
